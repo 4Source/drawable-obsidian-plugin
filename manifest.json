@@ -1,0 +1,10 @@
+{
+	"id": "draw-enable",
+	"name": "DrawEnable",
+	"version": "0.0.1",
+	"minAppVersion": "0.15.0",
+	"description": "This plugin is for drawing with a pen in Obsidian.",
+	"author": "4Source",
+	"authorUrl": "https://github.com/4Source",
+	"isDesktopOnly": true
+}
