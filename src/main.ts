@@ -16,7 +16,6 @@ export default class DrawEnablePlugin extends Plugin {
 	editMode: string;
 	statusBarInputMode: HTMLSpanElement;
 	statusBarEditMode: HTMLSpanElement;
-	uiIntervalId: number;
 
 	async onload() {
 		await this.loadSettings();
@@ -44,9 +43,9 @@ export default class DrawEnablePlugin extends Plugin {
 		});
 
 		// Update Non time critical UI at Intervall 
-		this.uiIntervalId = window.setInterval(() => {
+		this.registerInterval(window.setInterval(() => {
 			this.updateUI();
-		}, 500);
+		}, 500)); 
 
 		// Mouse, Pen, Touch Input
 		this.registerDomEvent(document, 'pointermove', (evt: PointerEvent) => {
@@ -148,8 +147,7 @@ export default class DrawEnablePlugin extends Plugin {
 	}
 
 	onunload() {
-		// Clear Interval
-		window.clearInterval(this.uiIntervalId);
+		
 	}
 
 	async loadSettings() {
