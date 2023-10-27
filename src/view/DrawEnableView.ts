@@ -16,6 +16,10 @@ export default class DrawEnableView extends ItemView {
 		container.empty();
 		container.createEl("h4", { text: PLUGIN_DISPLAY_NAME });
 		
+		this.addAction('pencil', 'pen', () => {
+			console.log("Pen");
+		});
+
 		this.icon = 'pencil';
 	}
 
