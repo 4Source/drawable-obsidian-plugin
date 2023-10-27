@@ -1,4 +1,6 @@
-import { App, Plugin, PluginSettingTab, Setting, setIcon } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, setIcon } from 'obsidian';
+import DrawEnableView from 'src/view/DrawEnableView';
+import { PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
 
 interface DrawEnablePluginSettings {
 	settingsNumb1: string;
@@ -8,7 +10,7 @@ const DEFAULT_SETTINGS: DrawEnablePluginSettings = {
 	settingsNumb1: 'default'
 }
 
-export default class DrawEnable extends Plugin {
+export default class DrawEnablePlugin extends Plugin {
 	settings: DrawEnablePluginSettings;
 	inputType: string;
 	editMode: string;
@@ -23,17 +25,23 @@ export default class DrawEnable extends Plugin {
 		this.addSettingTab(new SettingTab(this.app, this));
 
 		// Status bar item to Display the Input type 
-		this.statusBarInputMode = this.addStatusBarItem().createEl("span", {cls: "status-bar-item-icon"});
+		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: "status-bar-item-icon" });
 		this.statusBarInputMode.parentElement?.setAttr("aria-label", "Input type");
 		this.statusBarInputMode.parentElement?.setAttr("data-tooltip-position", "top");
 		this.inputType = 'mouse'
 		//Status bar item to Display the Edit Mode
-		this.statusBarEditMode = this.addStatusBarItem().createEl("span", {cls: "status-bar-item-icon"});
+		this.statusBarEditMode = this.addStatusBarItem().createEl("span", { cls: "status-bar-item-icon" });
 		this.statusBarEditMode.parentElement?.setAttr("aria-label", "Edit Mode");
 		this.statusBarEditMode.parentElement?.setAttr("data-tooltip-position", "top");
 		this.editMode = 'pencil';
 
-		// console.log(this.app.workspace.getActiveViewOfType());
+		// Register DrawEnableView
+		this.registerView(VIEW_TYPE_DRAWENABLE, (leaf) => new DrawEnableView(leaf));
+
+		// Add an Icon for Activating DrawEnableView
+		this.addRibbonIcon('pencil', PLUGIN_DISPLAY_NAME + " öffnen", () => {
+			this.activateView();
+		});
 
 		// Update Non time critical UI at Intervall 
 		this.uiIntervalId = window.setInterval(() => {
@@ -44,6 +52,7 @@ export default class DrawEnable extends Plugin {
 		this.registerDomEvent(document, 'pointermove', (evt: PointerEvent) => {
 			this.inputType = evt.pointerType;
 		});
+
 
 		// Keyboard Input
 		this.registerDomEvent(document, 'keydown', (evt: KeyboardEvent) => {
@@ -56,19 +65,19 @@ export default class DrawEnable extends Plugin {
 	updateUI() {
 		console.debug("UI Update");
 		// Keyboard Input
-		if(this.inputType == 'keyboard') {
+		if (this.inputType == 'keyboard') {
 			setIcon(this.statusBarInputMode, 'keyboard')
 		}
 		// Mouse Input
-		else if(this.inputType == 'mouse') {
+		else if (this.inputType == 'mouse') {
 			setIcon(this.statusBarInputMode, 'mouse');
-		} 
+		}
 		// Pen Input
-		else if(this.inputType == 'pen') {
+		else if (this.inputType == 'pen') {
 			setIcon(this.statusBarInputMode, 'edit-2');
 		}
 		// Touch Input
-		else if(this.inputType == 'touch') {
+		else if (this.inputType == 'touch') {
 			setIcon(this.statusBarInputMode, 'pointer')
 		}
 		else {
@@ -77,59 +86,59 @@ export default class DrawEnable extends Plugin {
 		}
 
 		// Penil Mode
-		if(this.editMode == 'pencil') {
+		if (this.editMode == 'pencil') {
 			setIcon(this.statusBarEditMode, 'edit-2');
 		}
 		// Marker Mode
-		else if(this.editMode == 'marker') {
+		else if (this.editMode == 'marker') {
 			setIcon(this.statusBarEditMode, 'highlighter');
 		}
 		// Eraser Mode
-		else if(this.editMode == 'eraser') {
+		else if (this.editMode == 'eraser') {
 			setIcon(this.statusBarEditMode, 'eraser');
 		}
 		// Color Picker Mode
-		else if(this.editMode == 'pipette') {
+		else if (this.editMode == 'pipette') {
 			setIcon(this.statusBarEditMode, 'pipette');
 		}
 		// Brush Mode
-		else if(this.editMode == 'brush') {
+		else if (this.editMode == 'brush') {
 			setIcon(this.statusBarEditMode, 'brush');
 		}
 		// Ink Mode
-		else if(this.editMode == 'ink') {
+		else if (this.editMode == 'ink') {
 			setIcon(this.statusBarEditMode, 'pen-tool');
 		}
 		// Fill Mode
-		else if(this.editMode == 'fill') {
+		else if (this.editMode == 'fill') {
 			setIcon(this.statusBarEditMode, 'paint-bucket');
 		}
 		// Pointer Mode
-		else if(this.editMode == 'pointer') {
+		else if (this.editMode == 'pointer') {
 			setIcon(this.statusBarEditMode, 'help-circle');
 		}
 		// Text Mode 
-		else if(this.editMode == 'text') {
+		else if (this.editMode == 'text') {
 			setIcon(this.statusBarEditMode, 'type');
 		}
 		// Connector Mode
-		else if(this.editMode == 'connector') {
+		else if (this.editMode == 'connector') {
 			setIcon(this.statusBarEditMode, 'spline');
 		}
 		// Move Mode
-		else if(this.editMode == 'move') {
+		else if (this.editMode == 'move') {
 			setIcon(this.statusBarEditMode, 'move');
 		}
 		// Select Mode
-		else if(this.editMode == 'select') {
+		else if (this.editMode == 'select') {
 			setIcon(this.statusBarEditMode, 'box-select');
 		}
 		// Split Vertical Mode
-		else if(this.editMode == 'split-vertical') {
+		else if (this.editMode == 'split-vertical') {
 			setIcon(this.statusBarEditMode, 'flip-vertical');
 		}
 		// Split Horizontal Mode
-		else if(this.editMode == 'split-horizontal') {
+		else if (this.editMode == 'split-horizontal') {
 			setIcon(this.statusBarEditMode, 'flip-horizontal');
 		}
 		else {
@@ -150,18 +159,42 @@ export default class DrawEnable extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	// TEST
+	async activateView() {
+		let { workspace } = this.app;
+
+		let leaf: WorkspaceLeaf | null = null;
+		let leaves = workspace.getLeavesOfType(VIEW_TYPE_DRAWENABLE);
+
+		if (leaves.length > 0) {
+			// A leaf with our view already exists, use that
+			leaf = leaves[0];
+		} else {
+			// Our view could not be found in the workspace, create a new leaf
+			// in the right sidebar for it
+			let leaf = workspace.getRightLeaf(false);
+			await leaf.setViewState({ type: VIEW_TYPE_DRAWENABLE, active: true });
+		}
+
+		// "Reveal" the leaf in case it is in a collapsed sidebar
+		if (leaf) {
+			workspace.revealLeaf(leaf);
+		}
+	}
+	// TEST END
 }
 
 class SettingTab extends PluginSettingTab {
-	plugin: DrawEnable;
+	plugin: DrawEnablePlugin;
 
-	constructor(app: App, plugin: DrawEnable) {
+	constructor(app: App, plugin: DrawEnablePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
 
 	display(): void {
-		const {containerEl} = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
 
