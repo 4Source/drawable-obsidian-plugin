@@ -60,86 +60,75 @@ export default class DrawEnablePlugin extends Plugin {
 	// Update UI
 	updateUI() {
 		console.debug("UI Update");
-		// Keyboard Input
-		if (this.inputType == 'keyboard') {
-			setIcon(this.statusBarInputMode, 'keyboard')
-		}
-		// Mouse Input
-		else if (this.inputType == 'mouse') {
+		// Input Type
+		switch (this.inputType) {
+			case 'keyboard':
+				setIcon(this.statusBarInputMode, 'keyboard');
+				break;
+			case 'mouse':
 			setIcon(this.statusBarInputMode, 'mouse');
-		}
-		// Pen Input
-		else if (this.inputType == 'pen') {
+				break;
+			case 'pen':
 			setIcon(this.statusBarInputMode, 'edit-2');
-		}
-		// Touch Input
-		else if (this.inputType == 'touch') {
-			setIcon(this.statusBarInputMode, 'pointer')
-		}
-		else {
-			console.warn("Input-Type not found!");
-			setIcon(this.statusBarInputMode, 'help-circle');
-		}
+				break;
+			case 'touch':
+				setIcon(this.statusBarInputMode, 'pointer');
+				break;
 
-		// Penil Mode
-		if (this.editMode == 'pencil') {
+			default:
+				console.warn("Input-Type not found! " + this.inputType);
+			setIcon(this.statusBarInputMode, 'help-circle');
+				break;
+		}
+		// Edit Mode
+		switch (this.editMode) {
+			case 'pencil':
 			setIcon(this.statusBarEditMode, 'edit-2');
-		}
-		// Marker Mode
-		else if (this.editMode == 'marker') {
+				break;
+			case 'marker':
 			setIcon(this.statusBarEditMode, 'highlighter');
-		}
-		// Eraser Mode
-		else if (this.editMode == 'eraser') {
+				break;
+			case 'eraser':
 			setIcon(this.statusBarEditMode, 'eraser');
-		}
-		// Color Picker Mode
-		else if (this.editMode == 'pipette') {
+				break;
+			case 'pipette':
 			setIcon(this.statusBarEditMode, 'pipette');
-		}
-		// Brush Mode
-		else if (this.editMode == 'brush') {
+				break;
+			case 'brush':
 			setIcon(this.statusBarEditMode, 'brush');
-		}
-		// Ink Mode
-		else if (this.editMode == 'ink') {
+				break;
+			case 'ink':
 			setIcon(this.statusBarEditMode, 'pen-tool');
-		}
-		// Fill Mode
-		else if (this.editMode == 'fill') {
+				break;
+			case 'fill':
 			setIcon(this.statusBarEditMode, 'paint-bucket');
-		}
-		// Pointer Mode
-		else if (this.editMode == 'pointer') {
+				break;
+			case 'pointer':
 			setIcon(this.statusBarEditMode, 'help-circle');
-		}
-		// Text Mode 
-		else if (this.editMode == 'text') {
+				break;
+			case 'text':
 			setIcon(this.statusBarEditMode, 'type');
-		}
-		// Connector Mode
-		else if (this.editMode == 'connector') {
+				break;
+			case 'connector':
 			setIcon(this.statusBarEditMode, 'spline');
-		}
-		// Move Mode
-		else if (this.editMode == 'move') {
+				break;
+			case 'move':
 			setIcon(this.statusBarEditMode, 'move');
-		}
-		// Select Mode
-		else if (this.editMode == 'select') {
+				break;
+			case 'select':
 			setIcon(this.statusBarEditMode, 'box-select');
-		}
-		// Split Vertical Mode
-		else if (this.editMode == 'split-vertical') {
+				break;
+			case 'split-vertical':
 			setIcon(this.statusBarEditMode, 'flip-vertical');
-		}
-		// Split Horizontal Mode
-		else if (this.editMode == 'split-horizontal') {
+				break;
+			case 'split-horizontal':
 			setIcon(this.statusBarEditMode, 'flip-horizontal');
-		}
-		else {
-			console.warn("Edit-Mode not found!");
+				break;
+
+			default:
+				console.warn("Edit-Mode not found! " + this.editMode);
 			setIcon(this.statusBarEditMode, 'help-circle');
+				break;
 		}
 	}
 
