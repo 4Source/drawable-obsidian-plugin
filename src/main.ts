@@ -2,11 +2,11 @@ import { App, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, setIcon } from '
 import DrawEnableView from 'src/view/DrawEnableView';
 import { PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
 
-interface DrawEnablePluginSettings {
+export interface DrawEnablePluginSettings {
 	settingsNumb1: string;
 }
 
-const DEFAULT_SETTINGS: DrawEnablePluginSettings = {
+export const DEFAULT_SETTINGS: DrawEnablePluginSettings = {
 	settingsNumb1: 'default'
 }
 
@@ -18,10 +18,7 @@ export default class DrawEnablePlugin extends Plugin {
 	statusBarEditMode: HTMLSpanElement;
 
 	async onload() {
-		await this.loadSettings();
-
-		// This adds a settings tab so the user can configure various aspects of the plugin
-		this.addSettingTab(new SettingTab(this.app, this));
+		await this.setupSettingsTab();
 
 		// Status bar item to Display the Input type 
 		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: "status-bar-item-icon" });
@@ -150,6 +147,13 @@ export default class DrawEnablePlugin extends Plugin {
 		
 	}
 
+	async setupSettingsTab() {
+		await this.loadSettings();
+
+		// This adds a settings tab so the user can configure various aspects of the plugin
+		this.addSettingTab(new SettingTab(this.app, this));
+	}
+
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
@@ -183,7 +187,7 @@ export default class DrawEnablePlugin extends Plugin {
 	// TEST END
 }
 
-class SettingTab extends PluginSettingTab {
+export class SettingTab extends PluginSettingTab {
 	plugin: DrawEnablePlugin;
 
 	constructor(app: App, plugin: DrawEnablePlugin) {
