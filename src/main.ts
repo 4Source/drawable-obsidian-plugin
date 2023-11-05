@@ -1,6 +1,6 @@
 import { App, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, setIcon } from 'obsidian';
 import DrawEnableView from 'src/view/DrawEnableView';
-import { PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
+import { CSS_PLUGIN_CLASS, ICON_ALERT, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH, ICON_PLUGIN, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
 
 export interface DrawEnablePluginSettings {
 	settingsNumb1: string;
@@ -21,12 +21,12 @@ export default class DrawEnablePlugin extends Plugin {
 		await this.setupSettingsTab();
 
 		// Status bar item to Display the Input type 
-		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: "status-bar-item-icon" });
+		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
 		this.statusBarInputMode.parentElement?.setAttr("aria-label", "Input type");
 		this.statusBarInputMode.parentElement?.setAttr("data-tooltip-position", "top");
 		this.inputType = 'mouse'
 		//Status bar item to Display the Edit Mode
-		this.statusBarEditMode = this.addStatusBarItem().createEl("span", { cls: "status-bar-item-icon" });
+		this.statusBarEditMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
 		this.statusBarEditMode.parentElement?.setAttr("aria-label", "Edit Mode");
 		this.statusBarEditMode.parentElement?.setAttr("data-tooltip-position", "top");
 		this.editMode = 'pencil';
@@ -35,17 +35,20 @@ export default class DrawEnablePlugin extends Plugin {
 		this.registerView(VIEW_TYPE_DRAWENABLE, (leaf) => new DrawEnableView(leaf));
 
 		// Add an Icon for Activating DrawEnableView
-		this.addRibbonIcon('pencil', PLUGIN_DISPLAY_NAME + " öffnen", () => {
+		this.addRibbonIcon(ICON_PLUGIN, "Open "+ PLUGIN_DISPLAY_NAME, () => {
 			this.activateView();
 		});
 
 		// Update Non time critical UI at Intervall 
 		this.registerInterval(window.setInterval(() => {
 			this.updateUI();
-		}, 500)); 
+		}, 500));
 
 		// Mouse, Pen, Touch Input
 		this.registerDomEvent(document, 'pointermove', (evt: PointerEvent) => {
+			this.inputType = evt.pointerType;
+		});
+		this.registerDomEvent(document, 'pointerdown', (evt: PointerEvent) => {
 			this.inputType = evt.pointerType;
 		});
 
@@ -63,77 +66,53 @@ export default class DrawEnablePlugin extends Plugin {
 		// Input Type
 		switch (this.inputType) {
 			case 'keyboard':
-				setIcon(this.statusBarInputMode, 'keyboard');
+				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_KEYBOARD);
 				break;
 			case 'mouse':
-			setIcon(this.statusBarInputMode, 'mouse');
+				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_MOUSE);
 				break;
 			case 'pen':
-			setIcon(this.statusBarInputMode, 'edit-2');
+				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_PEN);
 				break;
 			case 'touch':
-				setIcon(this.statusBarInputMode, 'pointer');
+				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_TOUCH);
 				break;
 
 			default:
 				console.warn("Input-Type not found! " + this.inputType);
-			setIcon(this.statusBarInputMode, 'help-circle');
+				setIcon(this.statusBarInputMode, ICON_ALERT);
 				break;
 		}
 		// Edit Mode
 		switch (this.editMode) {
 			case 'pencil':
-			setIcon(this.statusBarEditMode, 'edit-2');
+				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_PENCIL);
 				break;
 			case 'marker':
-			setIcon(this.statusBarEditMode, 'highlighter');
+				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_MARKER);
 				break;
 			case 'eraser':
-			setIcon(this.statusBarEditMode, 'eraser');
-				break;
-			case 'pipette':
-			setIcon(this.statusBarEditMode, 'pipette');
-				break;
-			case 'brush':
-			setIcon(this.statusBarEditMode, 'brush');
-				break;
-			case 'ink':
-			setIcon(this.statusBarEditMode, 'pen-tool');
-				break;
-			case 'fill':
-			setIcon(this.statusBarEditMode, 'paint-bucket');
+				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_ERASER);
 				break;
 			case 'pointer':
-			setIcon(this.statusBarEditMode, 'help-circle');
-				break;
-			case 'text':
-			setIcon(this.statusBarEditMode, 'type');
-				break;
-			case 'connector':
-			setIcon(this.statusBarEditMode, 'spline');
+				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_POINTER);
 				break;
 			case 'move':
-			setIcon(this.statusBarEditMode, 'move');
+				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_MOVE);
 				break;
 			case 'select':
-			setIcon(this.statusBarEditMode, 'box-select');
-				break;
-			case 'split-vertical':
-			setIcon(this.statusBarEditMode, 'flip-vertical');
-				break;
-			case 'split-horizontal':
-			setIcon(this.statusBarEditMode, 'flip-horizontal');
+				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_SELECT);
 				break;
 
 			default:
 				console.warn("Edit-Mode not found! " + this.editMode);
-			setIcon(this.statusBarEditMode, 'help-circle');
+				setIcon(this.statusBarEditMode, ICON_ALERT);
 				break;
 		}
 	}
 
 	onunload() {
-		
+
 	}
 
 	async setupSettingsTab() {
