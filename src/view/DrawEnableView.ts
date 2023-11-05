@@ -3,6 +3,7 @@ import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_ED
 
 export default class DrawEnableView extends ItemView {
 	controls: HTMLElement;
+	background: SVGBackground;
 	toolGroup: SelectControlGroup;
 	unredoGroup: ControlGroup;
 	settingsGroup: ControlGroup;
@@ -25,6 +26,10 @@ export default class DrawEnableView extends ItemView {
 		container.addClass(CSS_PLUGIN_CLASS);
 		container.empty();
 		container.createEl('div', { cls: ['wrapper', CSS_PLUGIN_CLASS] });
+
+		// Background
+		this.background = new SVGBackground(container.children[0]);
+		// Controls
 		this.controls = Control.createControl(container.children[0]);
 
 		// Tools Group
@@ -213,5 +218,32 @@ class Control {
 	 */
 	static createControl(parent: Element) {
 		return parent.createEl('div', { cls: ['controls', CSS_PLUGIN_CLASS] });
+	}
+}
+
+class SVGSurface {
+	element: SVGElement;
+
+	constructor(parant: Element) {
+		this.element = parant.createSvg('svg');
+		this.element.addClass(CSS_PLUGIN_CLASS);
+	}
+}
+
+class SVGBackground extends SVGSurface {
+	pattern_dot: SVGPatternElement;
+	pattern_plus: SVGPatternElement;
+
+	constructor(parant: Element) {
+		super(parant);
+		// Create Dot Pattern
+		this.pattern_dot = this.element.createSvg('pattern', { attr: { 'id': 'drawenable-dot', 'patternUnits': 'userSpaceOnUse', 'x': 100, 'y': 100, 'width': 20, 'height': 20 } });
+		this.pattern_dot.createSvg('circle', { attr: { 'cx': 10.7, 'cy': 10.7, 'r': 0.7, 'fill': 'var(--canvas-dot-pattern)' } });
+		// Create Plus Pattern
+		this.pattern_plus = this.element.createSvg('pattern', { attr: { 'id': 'drawenable-plus', 'patternUnits': 'userSpaceOnUse', 'x': 100, 'y': 100, 'width': 20, 'height': 20 } });
+		this.pattern_plus.createSvg('path', { attr: { 'd': 'M3.25 10h13.5M10 3.25v13.5', 'stroke-width': 0.3, 'stroke': 'var(--canvas-dot-pattern)' } });
+
+		this.element.addClasses(['background', 'dot']);
+		this.element.createSvg('rect', { attr: { 'x': 0, 'y': 0 } });
 	}
 }

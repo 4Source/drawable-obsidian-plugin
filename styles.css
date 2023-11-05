@@ -73,14 +73,40 @@ If your plugin does not need CSS, delete this file.
     --icon-stroke: var(--icon-s-stroke-width);
 }
 
-.control-item:hover {
+.control-item.plugin-draw-enable:hover {
 	color: var(--text-normal);
     background-color: var(--interactive-hover);
 }
 
 .control-item.plugin-draw-enable.selected {
-	/* color: var(--text-accent);
-	background-color: var(--interactive-hover); */
 	color: var(--text-normal);
 	background-color: var(--interactive-accent);
 }
+
+.background.plugin-draw-enable {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	pointer-events: none;
+}
+
+.background.plugin-draw-enable pattern {
+	overflow: hidden;
+}
+
+.background.plugin-draw-enable rect {
+	width: 100%;
+	height: 100%;
+	fill: none;
+}
+
+.background.plugin-draw-enable.dot rect {
+	fill: url(#drawenable-dot);
+}
+
+.background.plugin-draw-enable.plus rect {
+	fill: url(#drawenable-plus);
+}
+
