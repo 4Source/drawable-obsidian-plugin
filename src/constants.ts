@@ -21,4 +21,5 @@ export const ICON_SETTING = 'settings';
 export const ICON_HELP = 'help-circle';
 export const ICON_ALERT = 'alert-octagon';
 export const ICON_ERROR = 'x-octagon';
-
+export const ICON_MORE_HORIZONTAL = 'more-horizontal';
+export const ICON_MORE_VERTICAL = 'more-vertical';

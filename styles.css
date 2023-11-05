@@ -82,6 +82,19 @@ If your plugin does not need CSS, delete this file.
 	color: var(--text-normal);
 	background-color: var(--interactive-accent);
 }
+.control-item.plugin-draw-enable.selected:hover {
+	background-color: var(--interactive-accent-hover);
+}
+.child-control-item.plugin-draw-enable.invisible {
+	display: none;
+}
+.child-control-item.plugin-draw-enable {
+	background-color: var(--interactive-accent);
+	margin-top: -1px;
+}
+.child-control-item.plugin-draw-enable:hover {
+	background-color: var(--interactive-accent-hover);
+}
 
 .background.plugin-draw-enable {
 	position: absolute;

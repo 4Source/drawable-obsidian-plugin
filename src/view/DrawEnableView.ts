@@ -1,5 +1,5 @@
 import { ItemView, setIcon } from "obsidian";
-import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from "../constants";
+import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_MORE_HORIZONTAL, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from "../constants";
 
 export default class DrawEnableView extends ItemView {
 	controls: HTMLElement;
@@ -45,15 +45,20 @@ export default class DrawEnableView extends ItemView {
 		// Tools Group
 		this.toolGroup = new SelectControlGroup(this.controls);
 		// Pencil
-		new SelectControlItem(this.toolGroup, 'pencil', 'Pencil', ICON_EDIT_MODE_PENCIL, () => { });
+		let pencil = new SelectControlItem(this.toolGroup, 'pencil', 'Pencil', ICON_EDIT_MODE_PENCIL, () => {});
+		new ChildControlItem(pencil, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{});
 		// Marker
-		new SelectControlItem(this.toolGroup, 'marker', 'Marker', ICON_EDIT_MODE_MARKER, () => { });
+		let marker = new SelectControlItem(this.toolGroup, 'marker', 'Marker', ICON_EDIT_MODE_MARKER, () => { });
+		new ChildControlItem(marker, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{});
 		// Eraser
-		new SelectControlItem(this.toolGroup, 'eraser', 'Eraser', ICON_EDIT_MODE_ERASER, () => { });
+		let eraser = new SelectControlItem(this.toolGroup, 'eraser', 'Eraser', ICON_EDIT_MODE_ERASER, () => { });
+		new ChildControlItem(eraser, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{})
 		// Select
-		new SelectControlItem(this.toolGroup, 'select', 'Select', ICON_EDIT_MODE_SELECT, () => { });
+		let select = new SelectControlItem(this.toolGroup, 'select', 'Select', ICON_EDIT_MODE_SELECT, () => { });
+		new ChildControlItem(select, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{})
 		// Pointer
-		new SelectControlItem(this.toolGroup, 'pointer', 'Pointer', ICON_EDIT_MODE_POINTER, () => { });
+		let pointer = new SelectControlItem(this.toolGroup, 'pointer', 'Pointer', ICON_EDIT_MODE_POINTER, () => { });
+		new ChildControlItem(pointer, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{})
 		// Pan
 		new SelectControlItem(this.toolGroup, 'move', 'Move', ICON_EDIT_MODE_MOVE, () => { }, true);
 
@@ -151,6 +156,44 @@ class MenuControlItem extends ControlItem {
 
 }
 
+class ChildControlItem extends MenuControlItem {
+	parent: ControlItem;
+
+	/**
+	 * 
+	 * @param parent 
+	 * @param name 
+	 * @param label 
+	 * @param icon 
+	 * @param onClickCallback 
+	 */
+	constructor(parent: ControlItem, name: string, label: string, icon: string, onClickCallback: () => any) {
+		super(parent.group, name, label, icon, onClickCallback);
+
+		this.element.addClass('invisible');
+		this.element.addClass('child-control-item');
+
+		parent.element.addEventListener('itemselectionchange', (ev)=>{
+			this.changeVisibility(parent.element.hasClass('selected'))
+		});
+	}
+
+	/**
+	 * 
+	 * @param visible 
+	 */
+	changeVisibility(visible: boolean) {
+		if(visible) {
+			this.element.removeClass('invisible');
+		}
+		else {
+			this.element.addClass('invisible');
+		}
+	}
+
+
+}
+
 class PopupControlItem extends ControlItem {
 
 	/**
@@ -212,9 +255,11 @@ class SelectControlGroup extends ControlGroup {
 		this.controlItems.forEach(controlItem => {
 			if (controlItem.name === name) {
 				controlItem.element.addClass('selected');
+				controlItem.element.dispatchEvent(new CustomEvent('itemselectionchange'));
 			}
 			else if (controlItem.element.hasClass('selected')) {
 				controlItem.element.removeClass('selected');
+				controlItem.element.dispatchEvent(new CustomEvent('itemselectionchange'));
 			}
 		});
 	}
