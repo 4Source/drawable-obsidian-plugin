@@ -4,6 +4,7 @@ import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_ED
 export default class DrawEnableView extends ItemView {
 	controls: HTMLElement;
 	background: SVGBackground;
+	sheet: SVGSheet;
 	toolGroup: SelectControlGroup;
 	unredoGroup: ControlGroup;
 	settingsGroup: ControlGroup;
@@ -31,6 +32,15 @@ export default class DrawEnableView extends ItemView {
 		this.background = new SVGBackground(container.children[0]);
 		// Controls
 		this.controls = Control.createControl(container.children[0]);
+		// SVG Sheet
+		this.sheet = new SVGSheet(container.children[0], (ev) => {
+			this.sheet.addPolyline(ev.offsetX, ev.offsetY);
+		}, (ev) => {
+			this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+		}, (ev) => {
+			this.sheet.endPolyline(ev.offsetX, ev.offsetY);
+		});
+
 
 		// Tools Group
 		this.toolGroup = new SelectControlGroup(this.controls);
@@ -245,5 +255,37 @@ class SVGBackground extends SVGSurface {
 
 		this.element.addClasses(['background', 'dot']);
 		this.element.createSvg('rect', { attr: { 'x': 0, 'y': 0 } });
+	}
+}
+
+class SVGSheet extends SVGSurface {
+	active: SVGPolygonElement;
+
+	constructor(parent: Element, onPointerdownCallback: (ev: PointerEvent) => any, onPointerupCallback: (ev: PointerEvent) => any, onPointermoveCallback: (ev: PointerEvent) => any,) {
+		super(parent);
+		this.element.addClass('sheet');
+		this.element.addEventListener('pointerdown', (ev) => {
+			this.element.addEventListener('pointermove', onPointermoveCallback);
+			onPointerdownCallback(ev);
+		});
+		this.element.addEventListener('pointerup', (ev) => {
+			this.element.removeEventListener('pointermove', onPointermoveCallback);
+			onPointerupCallback(ev);
+		});
+
+	}
+
+	addPolyline(x: number, y: number) {
+		this.active = this.element.createSvg('polyline', { attr: { 'points': `${x}, ${y}`, 'fill': 'none', 'stroke': 'black', 'stroke-width': '3' } });
+	}
+	appendPolyline(x: number, y: number) {
+		if (this.active) {
+			let points = this.active.getAttr('points');
+			points = points + ` ${x},${y}`;
+			this.active.setAttr('points', points);
+		}
+	}
+	endPolyline(x: number, y: number) {
+		this.appendPolyline(x, y);
 	}
 }
