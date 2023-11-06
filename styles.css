@@ -54,6 +54,15 @@ If your plugin does not need CSS, delete this file.
 	flex-direction: column;
 	overflow: hidden;
 }
+.sub-control-group.plugin-draw-enable {
+	/* border-radius: var(--radius-s); */
+	background-color: var(--background-primary);
+	/* border: 1px solid var(--background-modifier-border); */
+	box-shadow: var(--input-shadow);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
 
 .control-item.plugin-draw-enable {
 	border-radius: 0;
@@ -85,16 +94,16 @@ If your plugin does not need CSS, delete this file.
 .control-item.plugin-draw-enable.selected:hover {
 	background-color: var(--interactive-accent-hover);
 }
-.child-control-item.plugin-draw-enable.invisible {
+.control-item.plugin-draw-enable.invisible {
 	display: none;
 }
-.child-control-item.plugin-draw-enable {
+/* .child-control-item.plugin-draw-enable {
 	background-color: var(--interactive-accent);
 	margin-top: -1px;
 }
 .child-control-item.plugin-draw-enable:hover {
 	background-color: var(--interactive-accent-hover);
-}
+} */
 
 .background.plugin-draw-enable {
 	position: absolute;

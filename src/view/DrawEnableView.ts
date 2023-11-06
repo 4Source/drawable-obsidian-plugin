@@ -1,11 +1,15 @@
-import { ItemView, setIcon } from "obsidian";
+import { ItemView } from "obsidian";
 import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_MORE_HORIZONTAL, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from "../constants";
+import { Control } from "src/controls/Control";
+import { ControlGroup } from "src/controls/ControlGroup";
+import { SVGBackground } from "src/svg/SVGBackground";
+import { SVGSheet } from "src/svg/SVGSheet";
 
 export default class DrawEnableView extends ItemView {
-	controls: HTMLElement;
+	controls: Control;
 	background: SVGBackground;
 	sheet: SVGSheet;
-	toolGroup: SelectControlGroup;
+	toolGroup: ControlGroup;
 	unredoGroup: ControlGroup;
 	settingsGroup: ControlGroup;
 	helpGroup: ControlGroup;
@@ -17,7 +21,6 @@ export default class DrawEnableView extends ItemView {
 	getDisplayText(): string {
 		return PLUGIN_DISPLAY_NAME;
 	}
-
 
 	async onOpen() {
 		// Set Icon of the Window
@@ -31,55 +34,57 @@ export default class DrawEnableView extends ItemView {
 		// Background
 		this.background = new SVGBackground(container.children[0]);
 		// Controls
-		this.controls = Control.createControl(container.children[0]);
+		this.controls = new Control(container.children[0]);
 		// SVG Sheet
 		this.sheet = new SVGSheet(container.children[0], (ev) => {
 			this.sheet.addPolyline(ev.offsetX, ev.offsetY);
 		}, (ev) => {
 			this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
 		}, (ev) => {
-			this.sheet.endPolyline(ev.offsetX, ev.offsetY);
+			this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
 		});
 
-
 		// Tools Group
-		this.toolGroup = new SelectControlGroup(this.controls);
+		this.toolGroup = this.controls.createControlGroup();
 		// Pencil
-		let pencil = new SelectControlItem(this.toolGroup, 'pencil', 'Pencil', ICON_EDIT_MODE_PENCIL, () => {});
-		new ChildControlItem(pencil, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{});
+		let pencilSubGroup = this.toolGroup.createControlSubGroup({});
+		let pencil = pencilSubGroup.createControlItem({ id: 'pencil', label: 'Pencil', icon: ICON_EDIT_MODE_PENCIL, selectgroup: this.toolGroup });
+		pencilSubGroup.createControlItem({ id: 'pencil_o', label: 'Pencil Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: pencil });
 		// Marker
-		let marker = new SelectControlItem(this.toolGroup, 'marker', 'Marker', ICON_EDIT_MODE_MARKER, () => { });
-		new ChildControlItem(marker, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{});
+		let markerSubGroup = this.toolGroup.createControlSubGroup({});
+		let marker = markerSubGroup.createControlItem({ id: 'marker', label: 'Marker', icon: ICON_EDIT_MODE_MARKER, selectgroup: this.toolGroup });
+		markerSubGroup.createControlItem({ id: 'marker_o', label: 'Marker Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: marker });
 		// Eraser
-		let eraser = new SelectControlItem(this.toolGroup, 'eraser', 'Eraser', ICON_EDIT_MODE_ERASER, () => { });
-		new ChildControlItem(eraser, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{})
+		let eraserSubGroup = this.toolGroup.createControlSubGroup({});
+		let eraser = eraserSubGroup.createControlItem({ id: 'eraser', label: 'Eraser', icon: ICON_EDIT_MODE_ERASER, selectgroup: this.toolGroup });
+		eraserSubGroup.createControlItem({ id: 'eraser_o', label: 'Eraser Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: eraser });
 		// Select
-		let select = new SelectControlItem(this.toolGroup, 'select', 'Select', ICON_EDIT_MODE_SELECT, () => { });
-		new ChildControlItem(select, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{})
+		let selectSubGroup = this.toolGroup.createControlSubGroup({});
+		let select = selectSubGroup.createControlItem({ id: 'select', label: 'Select', icon: ICON_EDIT_MODE_SELECT, selectgroup: this.toolGroup });
+		selectSubGroup.createControlItem({ id: 'select_o', label: 'Select Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: select });
 		// Pointer
-		let pointer = new SelectControlItem(this.toolGroup, 'pointer', 'Pointer', ICON_EDIT_MODE_POINTER, () => { });
-		new ChildControlItem(pointer, 'options', 'Options', ICON_MORE_HORIZONTAL, ()=>{})
-		// Pan
-		new SelectControlItem(this.toolGroup, 'move', 'Move', ICON_EDIT_MODE_MOVE, () => { }, true);
+		let pointerSubGroup = this.toolGroup.createControlSubGroup({});
+		let pointer = pointerSubGroup.createControlItem({ id: 'pointer', label: 'Pointer', icon: ICON_EDIT_MODE_POINTER, selectgroup: this.toolGroup });
+		pointerSubGroup.createControlItem({ id: 'pointer_o', label: 'Pointer Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: pointer });
+		// Move
+		this.toolGroup.createControlItem({ id: 'move', label: 'Move', icon: ICON_EDIT_MODE_MOVE, selectgroup: this.toolGroup });
 
 		// Undo Redo Group
-		this.unredoGroup = new ControlGroup(this.controls);
+		this.unredoGroup = this.controls.createControlGroup();
 		// Undo
-		new ControlItem(this.unredoGroup, 'undo', 'Undo', ICON_UNDO, () => { });
+		this.unredoGroup.createControlItem({ id: 'undo', label: 'Undo', icon: ICON_UNDO });
 		// Redo
-		new ControlItem(this.unredoGroup, 'redo', 'Redo', ICON_REDO, () => { });
+		this.unredoGroup.createControlItem({ id: 'redo', label: 'Redo', icon: ICON_REDO });
 
 		// Settings Group
-		this.settingsGroup = new ControlGroup(this.controls);
+		this.settingsGroup = this.controls.createControlGroup();
 		// Settings
-		new MenuControlItem(this.settingsGroup, 'settings', 'Settings', ICON_SETTING, () => { });
+		this.settingsGroup.createControlItem({ id: 'settings', label: 'Settings', icon: ICON_SETTING });
 
 		// Help Group
-		this.helpGroup = new ControlGroup(this.controls);
+		this.helpGroup = this.controls.createControlGroup();
 		// Help
-		new PopupControlItem(this.helpGroup, 'help', 'Help', ICON_HELP, () => { });
-
-
+		this.helpGroup.createControlItem({ id: 'help', label: 'Help', icon: ICON_HELP });
 	}
 
 	async onClose() {
@@ -87,250 +92,3 @@ export default class DrawEnableView extends ItemView {
 	}
 }
 
-
-class ControlItem {
-	group: ControlGroup;
-	element: HTMLElement;
-	name: string;
-
-	/**
-	 * 
-	 * @param group 
-	 * @param name 
-	 * @param label 
-	 * @param icon 
-	 * @param onClickCallback 
-	 */
-	constructor(group: ControlGroup, name: string, label: string, icon: string, onClickCallback: () => any) {
-		this.group = group;
-		this.element = group.element.createEl('div', { cls: ["control-item", CSS_PLUGIN_CLASS] });
-		setIcon(this.element, icon);
-		this.element.setAttr("aria-label", label);
-		this.element.setAttr("data-tooltip-position", "left");
-		this.name = name;
-
-		this.group.addControlItem(this);
-		this.element.addEventListener('click', onClickCallback);
-	}
-}
-
-class SelectControlItem extends ControlItem {
-	group: SelectControlGroup;
-
-	/**
-	 * 
-	 * @param group 
-	 * @param name 
-	 * @param label 
-	 * @param icon 
-	 * @param onClickCallback 
-	 * @param selected 
-	 */
-	constructor(group: ControlGroup, name: string, label: string, icon: string, onClickCallback: () => any, selected?: boolean) {
-		super(group, name, label, icon, () => { this.select(); onClickCallback; });
-
-		this.group.addControlItem(this);
-		if (selected) {
-			this.select();
-		}
-	}
-
-	select() {
-		this.group.changeSelected(this.name);
-	}
-}
-
-class MenuControlItem extends ControlItem {
-
-	/**
-	 * 
-	 * @param group 
-	 * @param name 
-	 * @param label 
-	 * @param icon 
-	 * @param onClickCallback 
-	 */
-	constructor(group: ControlGroup, name: string, label: string, icon: string, onClickCallback: () => any) {
-		super(group, name, label, icon, onClickCallback);
-	}
-
-}
-
-class ChildControlItem extends MenuControlItem {
-	parent: ControlItem;
-
-	/**
-	 * 
-	 * @param parent 
-	 * @param name 
-	 * @param label 
-	 * @param icon 
-	 * @param onClickCallback 
-	 */
-	constructor(parent: ControlItem, name: string, label: string, icon: string, onClickCallback: () => any) {
-		super(parent.group, name, label, icon, onClickCallback);
-
-		this.element.addClass('invisible');
-		this.element.addClass('child-control-item');
-
-		parent.element.addEventListener('itemselectionchange', (ev)=>{
-			this.changeVisibility(parent.element.hasClass('selected'))
-		});
-	}
-
-	/**
-	 * 
-	 * @param visible 
-	 */
-	changeVisibility(visible: boolean) {
-		if(visible) {
-			this.element.removeClass('invisible');
-		}
-		else {
-			this.element.addClass('invisible');
-		}
-	}
-
-
-}
-
-class PopupControlItem extends ControlItem {
-
-	/**
-	 * 
-	 * @param group 
-	 * @param name 
-	 * @param label 
-	 * @param icon 
-	 * @param onClickCallback 
-	 */
-	constructor(group: ControlGroup, name: string, label: string, icon: string, onClickCallback: () => any) {
-		super(group, name, label, icon, onClickCallback);
-	}
-}
-
-class ControlGroup {
-	element: Element;
-	controlItems: ControlItem[];
-
-	/**
-	 * 
-	 * @param parant 
-	 */
-	constructor(parant: Element) {
-		this.element = parant.createEl('div', { cls: ['control-group', CSS_PLUGIN_CLASS] });
-		this.controlItems = [];
-	}
-
-	addControlItem(item: ControlItem) {
-		this.controlItems.push(item);
-	}
-}
-
-class SelectControlGroup extends ControlGroup {
-	controlItems: SelectControlItem[];
-
-	/**
-	 * 
-	 * @param parant 
-	 */
-	constructor(parant: Element) {
-		super(parant);
-		this.element.addClass('selectable-group');
-	}
-
-	/**
-	 * 
-	 * @param item 
-	 */
-	addControlItem(item: SelectControlItem) {
-		this.controlItems.push(item);
-	}
-
-	/**
-	 * 
-	 * @param name 
-	 */
-	changeSelected(name: string) {
-		this.controlItems.forEach(controlItem => {
-			if (controlItem.name === name) {
-				controlItem.element.addClass('selected');
-				controlItem.element.dispatchEvent(new CustomEvent('itemselectionchange'));
-			}
-			else if (controlItem.element.hasClass('selected')) {
-				controlItem.element.removeClass('selected');
-				controlItem.element.dispatchEvent(new CustomEvent('itemselectionchange'));
-			}
-		});
-	}
-}
-
-class Control {
-	/**
-	 * 
-	 * @param parent 
-	 * @returns 
-	 */
-	static createControl(parent: Element) {
-		return parent.createEl('div', { cls: ['controls', CSS_PLUGIN_CLASS] });
-	}
-}
-
-class SVGSurface {
-	element: SVGElement;
-
-	constructor(parant: Element) {
-		this.element = parant.createSvg('svg');
-		this.element.addClass(CSS_PLUGIN_CLASS);
-	}
-}
-
-class SVGBackground extends SVGSurface {
-	pattern_dot: SVGPatternElement;
-	pattern_plus: SVGPatternElement;
-
-	constructor(parant: Element) {
-		super(parant);
-		// Create Dot Pattern
-		this.pattern_dot = this.element.createSvg('pattern', { attr: { 'id': 'drawenable-dot', 'patternUnits': 'userSpaceOnUse', 'x': 100, 'y': 100, 'width': 20, 'height': 20 } });
-		this.pattern_dot.createSvg('circle', { attr: { 'cx': 10.7, 'cy': 10.7, 'r': 0.7, 'fill': 'var(--canvas-dot-pattern)' } });
-		// Create Plus Pattern
-		this.pattern_plus = this.element.createSvg('pattern', { attr: { 'id': 'drawenable-plus', 'patternUnits': 'userSpaceOnUse', 'x': 100, 'y': 100, 'width': 20, 'height': 20 } });
-		this.pattern_plus.createSvg('path', { attr: { 'd': 'M3.25 10h13.5M10 3.25v13.5', 'stroke-width': 0.3, 'stroke': 'var(--canvas-dot-pattern)' } });
-
-		this.element.addClasses(['background', 'dot']);
-		this.element.createSvg('rect', { attr: { 'x': 0, 'y': 0 } });
-	}
-}
-
-class SVGSheet extends SVGSurface {
-	active: SVGPolygonElement;
-
-	constructor(parent: Element, onPointerdownCallback: (ev: PointerEvent) => any, onPointerupCallback: (ev: PointerEvent) => any, onPointermoveCallback: (ev: PointerEvent) => any,) {
-		super(parent);
-		this.element.addClass('sheet');
-		this.element.addEventListener('pointerdown', (ev) => {
-			this.element.addEventListener('pointermove', onPointermoveCallback);
-			onPointerdownCallback(ev);
-		});
-		this.element.addEventListener('pointerup', (ev) => {
-			this.element.removeEventListener('pointermove', onPointermoveCallback);
-			onPointerupCallback(ev);
-		});
-
-	}
-
-	addPolyline(x: number, y: number) {
-		this.active = this.element.createSvg('polyline', { attr: { 'points': `${x}, ${y}`, 'fill': 'none', 'stroke': 'black', 'stroke-width': '3' } });
-	}
-	appendPolyline(x: number, y: number) {
-		if (this.active) {
-			let points = this.active.getAttr('points');
-			points = points + ` ${x},${y}`;
-			this.active.setAttr('points', points);
-		}
-	}
-	endPolyline(x: number, y: number) {
-		this.appendPolyline(x, y);
-	}
-}
