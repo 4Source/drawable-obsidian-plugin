@@ -1,6 +1,8 @@
 import { App, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, setIcon } from 'obsidian';
 import DrawEnableView from 'src/view/DrawEnableView';
 import { CSS_PLUGIN_CLASS, ICON_ALERT, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH, ICON_PLUGIN, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
+import { EInputType, Input } from './input/input';
+import { EToolType, Tool } from './tool/tool';
 
 export interface DrawEnablePluginSettings {
 	settingsNumb1: string;
@@ -12,8 +14,8 @@ export const DEFAULT_SETTINGS: DrawEnablePluginSettings = {
 
 export default class DrawEnablePlugin extends Plugin {
 	settings: DrawEnablePluginSettings;
-	inputType: string;
-	editMode: string;
+	inputType: Input;
+	editMode: Tool;
 	statusBarInputMode: HTMLSpanElement;
 	statusBarEditMode: HTMLSpanElement;
 
@@ -24,12 +26,12 @@ export default class DrawEnablePlugin extends Plugin {
 		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
 		this.statusBarInputMode.parentElement?.setAttr("aria-label", "Input type");
 		this.statusBarInputMode.parentElement?.setAttr("data-tooltip-position", "top");
-		this.inputType = 'mouse'
+		this.inputType = new Input(EInputType.mouse);
 		//Status bar item to Display the Edit Mode
 		this.statusBarEditMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
 		this.statusBarEditMode.parentElement?.setAttr("aria-label", "Edit Mode");
 		this.statusBarEditMode.parentElement?.setAttr("data-tooltip-position", "top");
-		this.editMode = 'pencil';
+		this.editMode = new Tool(EToolType.move);
 
 		// Register DrawEnableView
 		this.registerView(VIEW_TYPE_DRAWENABLE, (leaf) => new DrawEnableView(leaf));
@@ -46,16 +48,16 @@ export default class DrawEnablePlugin extends Plugin {
 
 		// Mouse, Pen, Touch Input
 		this.registerDomEvent(document, 'pointermove', (evt: PointerEvent) => {
-			this.inputType = evt.pointerType;
+			this.inputType.isTypeSetType(evt.pointerType);
 		});
 		this.registerDomEvent(document, 'pointerdown', (evt: PointerEvent) => {
-			this.inputType = evt.pointerType;
+			this.inputType.isTypeSetType(evt.pointerType);
 		});
 
 
 		// Keyboard Input
 		this.registerDomEvent(document, 'keydown', (evt: KeyboardEvent) => {
-			this.inputType = 'keyboard';
+			this.inputType.isTypeSetType('keyboard');
 		});
 
 	}
@@ -64,51 +66,10 @@ export default class DrawEnablePlugin extends Plugin {
 	updateUI() {
 		console.debug("UI Update");
 		// Input Type
-		switch (this.inputType) {
-			case 'keyboard':
-				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_KEYBOARD);
-				break;
-			case 'mouse':
-				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_MOUSE);
-				break;
-			case 'pen':
-				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_PEN);
-				break;
-			case 'touch':
-				setIcon(this.statusBarInputMode, ICON_INPUT_TYPE_TOUCH);
-				break;
-
-			default:
-				console.warn("Input-Type not found! " + this.inputType);
-				setIcon(this.statusBarInputMode, ICON_ALERT);
-				break;
-		}
+		setIcon(this.statusBarInputMode, this.inputType.getIcon());
+		
 		// Edit Mode
-		switch (this.editMode) {
-			case 'pencil':
-				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_PENCIL);
-				break;
-			case 'marker':
-				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_MARKER);
-				break;
-			case 'eraser':
-				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_ERASER);
-				break;
-			case 'pointer':
-				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_POINTER);
-				break;
-			case 'move':
-				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_MOVE);
-				break;
-			case 'select':
-				setIcon(this.statusBarEditMode, ICON_EDIT_MODE_SELECT);
-				break;
-
-			default:
-				console.warn("Edit-Mode not found! " + this.editMode);
-				setIcon(this.statusBarEditMode, ICON_ALERT);
-				break;
-		}
+		setIcon(this.statusBarEditMode, this.editMode.getIcon());
 	}
 
 	onunload() {
