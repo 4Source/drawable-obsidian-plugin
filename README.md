@@ -33,6 +33,7 @@ Panel with [navigation](https://github.com/4Source/DrawEnable-Obsidian-Plugin#na
 ### Opacity
 ## Eraser
 ### Size
+#### Smart adjustment
 ### Complete/Partial remove
 ## Pointer
 ### Size
