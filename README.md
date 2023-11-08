@@ -4,6 +4,17 @@ This is a plugin for Obsidian (https://obsidian.md).
 
 This project is for Handdrawing or writing in Obsidian.
 
+# Control panel
+Positon of panels and the order of icons could be modified. Each panel could be activated or deactivated.
+## Toolbar panel
+Toolbar with custumizabel [tools](https://github.com/4Source/DrawEnable-Obsidian-Plugin#tools)
+## Quick toolbar panel
+Toolbar panel with saved custumized [tools](https://github.com/4Source/DrawEnable-Obsidian-Plugin#tools) for quick change.
+## Undo/Redo panel
+## Navigation panel
+Panel with [navigation](https://github.com/4Source/DrawEnable-Obsidian-Plugin#navigation) funktionis.
+
+
 # Tools
 ## Pencil
 ### Size
@@ -31,10 +42,6 @@ This project is for Handdrawing or writing in Obsidian.
 #### Pipette Color Picker
 ### Opacity
 ### Delay time
-## Navigate
-### Scroll Page
-### Zoom Page
-### Rotate Page
 ## Select
 ### Selection
 #### Rectangle selection
@@ -46,3 +53,13 @@ This project is for Handdrawing or writing in Obsidian.
 #### Rotate
 #### Dublicate
 #### Remove
+
+# Navigation
+## Navigate
+### Scroll Page
+### Zoom Page
+### Rotate Page
+## Fit content
+## Reset rotation
+## Jump to Top
+## Jump to Bottom
