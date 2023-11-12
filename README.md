@@ -1,8 +1,10 @@
 # DrawEnable Obsidian Plugin
+> [!WARNING]  
+> This Plugin is under Development!
 
 This is a plugin for Obsidian (https://obsidian.md).
 
-This project is for Handdrawing or writing in Obsidian.
+This plugin is for Handdrawing or writing in Obsidian.
 
 # Control panel
 Positon of panels and the order of icons could be modified. Each panel could be activated or deactivated.
