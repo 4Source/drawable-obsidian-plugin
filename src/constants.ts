@@ -12,7 +12,7 @@ export const ICON_EDIT_MODE_PENCIL = 'edit-2';
 export const ICON_EDIT_MODE_MARKER = 'highlighter';
 export const ICON_EDIT_MODE_ERASER = 'eraser';
 export const ICON_EDIT_MODE_POINTER = 'help-circle';
-export const ICON_EDIT_MODE_MOVE = 'move';
+export const ICON_EDIT_MODE_NAV = 'move';
 export const ICON_EDIT_MODE_SELECT = 'box-select';
 
 export const ICON_UNDO = 'undo';

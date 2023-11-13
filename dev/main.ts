@@ -1,5 +1,8 @@
-import { App, Setting } from "obsidian";
+import { App, Setting, setIcon } from "obsidian";
 import DrawEnablePlugin, {DrawEnablePluginSettings, SettingTab, DEFAULT_SETTINGS} from "../src/main";
+import { EInputType, Input } from "src/input/input";
+import { EToolType, Tool } from "src/tool/tool";
+import { CSS_PLUGIN_CLASS } from "src/constants";
 
 interface DevPluginSettings extends DrawEnablePluginSettings {
 	devMode: boolean;
@@ -11,10 +14,32 @@ const DEV_DEFULT_SETTINGS: DevPluginSettings = Object.assign(DEFAULT_SETTINGS , 
 
 export default class DevPlugin extends DrawEnablePlugin {
 	settings: DevPluginSettings;
+	statusBarInputMode: HTMLSpanElement;
+	statusBarEditMode: HTMLSpanElement;
 
-	// async onload(): Promise<void> {
-	// 	super.onload();
-	// }
+	async onload(): Promise<void> {
+		super.onload();
+
+		// Status bar item to Display the Input type 
+		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
+		this.statusBarInputMode.parentElement?.setAttr("aria-label", "Input type");
+		this.statusBarInputMode.parentElement?.setAttr("data-tooltip-position", "top");
+		this.input = new Input(EInputType.none);
+		//Status bar item to Display the Edit Mode
+		this.statusBarEditMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
+		this.statusBarEditMode.parentElement?.setAttr("aria-label", "Edit Mode");
+		this.statusBarEditMode.parentElement?.setAttr("data-tooltip-position", "top");
+		this.tool = new Tool(EToolType.none);
+	}
+
+	updateUI(): void {
+		super.updateUI();
+		// Input Type
+		setIcon(this.statusBarInputMode, this.input.getIcon());
+		
+		// Edit Mode
+		setIcon(this.statusBarEditMode, this.tool.getIcon());
+	}
 
 	async setupSettingsTab() {
 		await this.loadSettings();		

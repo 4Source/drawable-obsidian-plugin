@@ -1,37 +1,28 @@
-import { App, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, setIcon } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, WorkspaceLeaf } from 'obsidian';
 import DrawEnableView from 'src/view/DrawEnableView';
-import { CSS_PLUGIN_CLASS, ICON_ALERT, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH, ICON_PLUGIN, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
+import { ICON_PLUGIN, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from 'src/constants';
 import { EInputType, Input } from './input/input';
 import { EToolType, Tool } from './tool/tool';
 
 export interface DrawEnablePluginSettings {
-	settingsNumb1: string;
+	MouseDefaultTool: EToolType,
+	TouchDefaultTool: EToolType,
+	PenDefaultTool: EToolType
 }
 
 export const DEFAULT_SETTINGS: DrawEnablePluginSettings = {
-	settingsNumb1: 'default'
+	MouseDefaultTool: EToolType.select,
+	TouchDefaultTool: EToolType.navigate,
+	PenDefaultTool: EToolType.pencil
 }
 
 export default class DrawEnablePlugin extends Plugin {
 	settings: DrawEnablePluginSettings;
-	inputType: Input;
-	editMode: Tool;
-	statusBarInputMode: HTMLSpanElement;
-	statusBarEditMode: HTMLSpanElement;
+	input: Input;
+	tool: Tool;
 
 	async onload() {
 		await this.setupSettingsTab();
-
-		// Status bar item to Display the Input type 
-		this.statusBarInputMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
-		this.statusBarInputMode.parentElement?.setAttr("aria-label", "Input type");
-		this.statusBarInputMode.parentElement?.setAttr("data-tooltip-position", "top");
-		this.inputType = new Input(EInputType.mouse);
-		//Status bar item to Display the Edit Mode
-		this.statusBarEditMode = this.addStatusBarItem().createEl("span", { cls: ["status-bar-item-icon", CSS_PLUGIN_CLASS] });
-		this.statusBarEditMode.parentElement?.setAttr("aria-label", "Edit Mode");
-		this.statusBarEditMode.parentElement?.setAttr("data-tooltip-position", "top");
-		this.editMode = new Tool(EToolType.move);
 
 		// Register DrawEnableView
 		this.registerView(VIEW_TYPE_DRAWENABLE, (leaf) => new DrawEnableView(leaf));
@@ -41,35 +32,43 @@ export default class DrawEnablePlugin extends Plugin {
 			this.activateView();
 		});
 
-		// Update Non time critical UI at Intervall 
+		// Update non time critical UI at Intervall 
 		this.registerInterval(window.setInterval(() => {
 			this.updateUI();
 		}, 500));
 
 		// Mouse, Pen, Touch Input
 		this.registerDomEvent(document, 'pointermove', (evt: PointerEvent) => {
-			this.inputType.isTypeSetType(evt.pointerType);
+			this.updateInput(Input.StringToType(evt.pointerType));
 		});
 		this.registerDomEvent(document, 'pointerdown', (evt: PointerEvent) => {
-			this.inputType.isTypeSetType(evt.pointerType);
+			this.updateInput(Input.StringToType(evt.pointerType));
 		});
 
 
 		// Keyboard Input
 		this.registerDomEvent(document, 'keydown', (evt: KeyboardEvent) => {
-			this.inputType.isTypeSetType('keyboard');
+			this.updateInput(Input.StringToType('keyboard'));
 		});
 
+	}
+
+	updateInput(inputType: EInputType) {
+		this.input.setType(inputType);
+		if(inputType == EInputType.mouse) {
+			this.tool.setType(this.settings.MouseDefaultTool)
+		}
+		else if(inputType == EInputType.pen) {
+			this.tool.setType(this.settings.PenDefaultTool)
+		}
+		else if(inputType == EInputType.touch) {
+			this.tool.setType(this.settings.TouchDefaultTool)
+		}
 	}
 
 	// Update UI
 	updateUI() {
 		console.debug("UI Update");
-		// Input Type
-		setIcon(this.statusBarInputMode, this.inputType.getIcon());
-		
-		// Edit Mode
-		setIcon(this.statusBarEditMode, this.editMode.getIcon());
 	}
 
 	onunload() {
@@ -130,14 +129,55 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.settingsNumb1)
-				.onChange(async (value) => {
-					this.plugin.settings.settingsNumb1 = value;
-					await this.plugin.saveSettings();
-				}));
+			.setName('Mouse Default Tool')
+			.setDesc('Whitch tool should be used if Input change to mouse.')
+			.addDropdown((component)=>{ component
+					.addOption(EToolType.eraser.toString(), EToolType.eraser.toString())
+					.addOption(EToolType.marker.toString(), EToolType.marker.toString())
+					.addOption(EToolType.navigate.toString(), EToolType.navigate.toString())
+					.addOption(EToolType.none.toString(), EToolType.none.toString())
+					.addOption(EToolType.pencil.toString(), EToolType.pencil.toString())
+					.addOption(EToolType.pointer.toString(), EToolType.pointer.toString())
+					.addOption(EToolType.select.toString(), EToolType.select.toString())
+					.setValue(this.plugin.settings.MouseDefaultTool.toString())
+					.onChange(async (value)=> {
+						this.plugin.settings.MouseDefaultTool = Tool.StringToType(value);
+						await this.plugin.saveSettings();
+					})
+			})
+			new Setting(containerEl)
+			.setName('Pen Default Tool')
+			.setDesc('Whitch tool should be used if Input change to pen.')
+			.addDropdown((component)=>{ component
+					.addOption(EToolType.eraser.toString(), EToolType.eraser.toString())
+					.addOption(EToolType.marker.toString(), EToolType.marker.toString())
+					.addOption(EToolType.navigate.toString(), EToolType.navigate.toString())
+					.addOption(EToolType.none.toString(), EToolType.none.toString())
+					.addOption(EToolType.pencil.toString(), EToolType.pencil.toString())
+					.addOption(EToolType.pointer.toString(), EToolType.pointer.toString())
+					.addOption(EToolType.select.toString(), EToolType.select.toString())
+					.setValue(this.plugin.settings.PenDefaultTool.toString())
+					.onChange(async (value)=> {
+						this.plugin.settings.PenDefaultTool = Tool.StringToType(value);
+						await this.plugin.saveSettings();
+					})
+			})
+			new Setting(containerEl)
+			.setName('Touch Default Tool')
+			.setDesc('Whitch tool should be used if Input change to touch.')
+			.addDropdown((component)=>{ component
+					.addOption(EToolType.eraser.toString(), EToolType.eraser.toString())
+					.addOption(EToolType.marker.toString(), EToolType.marker.toString())
+					.addOption(EToolType.navigate.toString(), EToolType.navigate.toString())
+					.addOption(EToolType.none.toString(), EToolType.none.toString())
+					.addOption(EToolType.pencil.toString(), EToolType.pencil.toString())
+					.addOption(EToolType.pointer.toString(), EToolType.pointer.toString())
+					.addOption(EToolType.select.toString(), EToolType.select.toString())
+					.setValue(this.plugin.settings.TouchDefaultTool.toString())
+					.onChange(async (value)=> {
+						this.plugin.settings.TouchDefaultTool = Tool.StringToType(value);
+						await this.plugin.saveSettings();
+					})
+			})
 	}
 }
