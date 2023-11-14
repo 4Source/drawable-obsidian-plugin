@@ -1,8 +1,8 @@
 import { ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP } from "src/constants";
 
 export class Tool {
-	type: EToolType;
-	icon: string;
+	private type: EToolType;
+	private icon: string;
 
 	constructor(type: EToolType) {
 		this.setType(type);
@@ -14,6 +14,9 @@ export class Tool {
 	}
 	setStringType(type: String) {
 		this.setType(Tool.StringToType(type));
+	}
+	getType() {
+		return this.type;
 	}
 
 	setDefaultIcon(type: EToolType) {

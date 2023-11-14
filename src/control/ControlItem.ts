@@ -29,15 +29,7 @@ export class ControlItem {
 
 		// Event Listeners
 		if (o.onClickCallback) {
-			if (o.selectgroup) {
-				this.element.addEventListener('click', () => {
-					this.select(this.id);
-					o.onClickCallback;
-				});
-			}
-			else {
-				this.element.addEventListener('click', o.onClickCallback);
-			}
+			this.element.addEventListener('click', o.onClickCallback);
 		}
 		if (o.selectgroup) {
 			this.element.addEventListener('click', () => {

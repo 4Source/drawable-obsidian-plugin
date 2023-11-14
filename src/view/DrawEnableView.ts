@@ -51,37 +51,46 @@ export default class DrawEnableView extends ItemView {
 		this.controls = new Control(container.children[0]);
 		// SVG Sheet
 		this.sheet = new SVGSheet(container.children[0], (ev) => {
-			this.sheet.addPolyline(ev.offsetX, ev.offsetY);
+			if(this.tool.getType() === EToolType.pencil) {
+				this.sheet.addPolyline(ev.offsetX, ev.offsetY);
+			}
+			
 		}, (ev) => {
-			this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+			if(this.tool.getType() === EToolType.pencil) {
+				this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+			}
+			
 		}, (ev) => {
-			this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+			if(this.tool.getType() === EToolType.pencil) {
+				this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+			}
+			
 		});
 
 		// Tools Group
 		this.toolGroup = this.controls.createControlGroup();
 		// Pencil
 		let pencilSubGroup = this.toolGroup.createControlSubGroup({});
-		let pencil = pencilSubGroup.createControlItem({ id: 'pencil', label: 'Pencil', icon: ICON_EDIT_MODE_PENCIL, selectgroup: this.toolGroup, onClickCallback: () => { this.tool.setType(EToolType.pencil) } });
+		let pencil = pencilSubGroup.createControlItem({ id: 'pencil', label: 'Pencil', icon: ICON_EDIT_MODE_PENCIL, selectgroup: this.toolGroup, onClickCallback: () => { this.updateTool(EToolType.pencil) } });
 		pencilSubGroup.createControlItem({ id: 'pencil_o', label: 'Pencil Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: pencil });
 		// Marker
 		let markerSubGroup = this.toolGroup.createControlSubGroup({});
-		let marker = markerSubGroup.createControlItem({ id: 'marker', label: 'Marker', icon: ICON_EDIT_MODE_MARKER, selectgroup: this.toolGroup });
+		let marker = markerSubGroup.createControlItem({ id: 'marker', label: 'Marker', icon: ICON_EDIT_MODE_MARKER, selectgroup: this.toolGroup, onClickCallback: () => { this.updateTool(EToolType.marker) } });
 		markerSubGroup.createControlItem({ id: 'marker_o', label: 'Marker Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: marker });
 		// Eraser
 		let eraserSubGroup = this.toolGroup.createControlSubGroup({});
-		let eraser = eraserSubGroup.createControlItem({ id: 'eraser', label: 'Eraser', icon: ICON_EDIT_MODE_ERASER, selectgroup: this.toolGroup });
+		let eraser = eraserSubGroup.createControlItem({ id: 'eraser', label: 'Eraser', icon: ICON_EDIT_MODE_ERASER, selectgroup: this.toolGroup, onClickCallback: () => { this.updateTool(EToolType.eraser) } });
 		eraserSubGroup.createControlItem({ id: 'eraser_o', label: 'Eraser Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: eraser });
 		// Select
 		let selectSubGroup = this.toolGroup.createControlSubGroup({});
-		let select = selectSubGroup.createControlItem({ id: 'select', label: 'Select', icon: ICON_EDIT_MODE_SELECT, selectgroup: this.toolGroup });
+		let select = selectSubGroup.createControlItem({ id: 'select', label: 'Select', icon: ICON_EDIT_MODE_SELECT, selectgroup: this.toolGroup, onClickCallback: () => { this.updateTool(EToolType.select) } });
 		selectSubGroup.createControlItem({ id: 'select_o', label: 'Select Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: select });
 		// Pointer
 		let pointerSubGroup = this.toolGroup.createControlSubGroup({});
-		let pointer = pointerSubGroup.createControlItem({ id: 'pointer', label: 'Pointer', icon: ICON_EDIT_MODE_POINTER, selectgroup: this.toolGroup });
+		let pointer = pointerSubGroup.createControlItem({ id: 'pointer', label: 'Pointer', icon: ICON_EDIT_MODE_POINTER, selectgroup: this.toolGroup, onClickCallback: () => { this.updateTool(EToolType.pointer) } });
 		pointerSubGroup.createControlItem({ id: 'pointer_o', label: 'Pointer Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: pointer });
 		// Navigate
-		this.toolGroup.createControlItem({ id: 'navigate', label: 'Navigate', icon: ICON_EDIT_MODE_NAV, selectgroup: this.toolGroup });
+		this.toolGroup.createControlItem({ id: 'navigate', label: 'Navigate', icon: ICON_EDIT_MODE_NAV, selectgroup: this.toolGroup, onClickCallback: () => { this.updateTool(EToolType.navigate) } });
 
 		// Undo Redo Group
 		this.unredoGroup = this.controls.createControlGroup();
@@ -105,7 +114,6 @@ export default class DrawEnableView extends ItemView {
 			this.updateInput(Input.StringToType(evt.pointerType));
 		});
 		this.registerDomEvent(document, 'pointerdown', (evt: PointerEvent) => {
-			console.log("pointerdown " + evt.pointerType);
 			this.updateInput(Input.StringToType(evt.pointerType));
 		});
 
@@ -121,25 +129,23 @@ export default class DrawEnableView extends ItemView {
 
 	updateInput(inputType: EInputType) {
 		if (this.input.getType() !== inputType) {	
-			console.log(inputType);
 			this.input.setType(inputType);
 			if (inputType == EInputType.mouse) {
 				this.updateTool(this.pluginSettings.MouseDefaultTool);
-				this.tool.setType(this.pluginSettings.MouseDefaultTool);
 			}
 			else if (inputType == EInputType.pen) {
 				this.updateTool(this.pluginSettings.PenDefaultTool);
-				this.tool.setType(this.pluginSettings.PenDefaultTool);
 			}
 			else if (inputType == EInputType.touch) {
 				this.updateTool(this.pluginSettings.TouchDefaultTool);
-				this.tool.setType(this.pluginSettings.TouchDefaultTool);
 			}
 		}
 	}
 
+
 	updateTool(toolType: EToolType) {
 		console.log(toolType);
+		this.tool.setType(toolType);
 		this.toolGroup.changeSelected(toolType.toString().toLocaleLowerCase());
 	}
 }
