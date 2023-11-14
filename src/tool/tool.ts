@@ -1,4 +1,4 @@
-import { ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT } from "src/constants";
+import { ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP } from "src/constants";
 
 export class Tool {
 	type: EToolType;
@@ -36,7 +36,7 @@ export class Tool {
 			this.icon = ICON_EDIT_MODE_SELECT;
 		}
 		else {
-			this.icon = "";
+			this.icon = ICON_HELP;
 		}
 	}
 	getIcon() {

@@ -1,9 +1,12 @@
-import { ItemView } from "obsidian";
-import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_MOVE, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_MORE_HORIZONTAL, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from "../constants";
-import { Control } from "src/controls/Control";
-import { ControlGroup } from "src/controls/ControlGroup";
+import { ItemView, WorkspaceLeaf } from "obsidian";
+import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_MORE_HORIZONTAL, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from "../constants";
+import { Control } from "src/control/Control";
+import { ControlGroup } from "src/control/ControlGroup";
 import { SVGBackground } from "src/svg/SVGBackground";
 import { SVGSheet } from "src/svg/SVGSheet";
+import { EInputType, Input } from "src/input/input";
+import { EToolType, Tool } from "src/tool/tool";
+import { DrawEnablePluginSettings } from "src/main";
 
 export default class DrawEnableView extends ItemView {
 	controls: Control;
@@ -13,6 +16,14 @@ export default class DrawEnableView extends ItemView {
 	unredoGroup: ControlGroup;
 	settingsGroup: ControlGroup;
 	helpGroup: ControlGroup;
+	pluginSettings: DrawEnablePluginSettings;
+	input: Input;
+	tool: Tool;
+
+	constructor(leaf: WorkspaceLeaf, settings: DrawEnablePluginSettings) {
+		super(leaf)
+		this.pluginSettings = settings;
+	}
 
 	getViewType(): string {
 		return VIEW_TYPE_DRAWENABLE;
@@ -25,6 +36,9 @@ export default class DrawEnableView extends ItemView {
 	async onOpen() {
 		// Set Icon of the Window
 		this.icon = ICON_PLUGIN;
+
+		this.input = new Input(EInputType.none);
+		this.tool = new Tool(EToolType.none);
 
 		const container = this.containerEl.children[1];
 		container.addClass(CSS_PLUGIN_CLASS);
@@ -48,7 +62,7 @@ export default class DrawEnableView extends ItemView {
 		this.toolGroup = this.controls.createControlGroup();
 		// Pencil
 		let pencilSubGroup = this.toolGroup.createControlSubGroup({});
-		let pencil = pencilSubGroup.createControlItem({ id: 'pencil', label: 'Pencil', icon: ICON_EDIT_MODE_PENCIL, selectgroup: this.toolGroup });
+		let pencil = pencilSubGroup.createControlItem({ id: 'pencil', label: 'Pencil', icon: ICON_EDIT_MODE_PENCIL, selectgroup: this.toolGroup, onClickCallback: () => { this.tool.setType(EToolType.pencil) } });
 		pencilSubGroup.createControlItem({ id: 'pencil_o', label: 'Pencil Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: pencil });
 		// Marker
 		let markerSubGroup = this.toolGroup.createControlSubGroup({});
@@ -66,8 +80,8 @@ export default class DrawEnableView extends ItemView {
 		let pointerSubGroup = this.toolGroup.createControlSubGroup({});
 		let pointer = pointerSubGroup.createControlItem({ id: 'pointer', label: 'Pointer', icon: ICON_EDIT_MODE_POINTER, selectgroup: this.toolGroup });
 		pointerSubGroup.createControlItem({ id: 'pointer_o', label: 'Pointer Options', icon: ICON_MORE_HORIZONTAL, invisible: true, parantitem: pointer });
-		// Move
-		this.toolGroup.createControlItem({ id: 'move', label: 'Move', icon: ICON_EDIT_MODE_MOVE, selectgroup: this.toolGroup });
+		// Navigate
+		this.toolGroup.createControlItem({ id: 'navigate', label: 'Navigate', icon: ICON_EDIT_MODE_NAV, selectgroup: this.toolGroup });
 
 		// Undo Redo Group
 		this.unredoGroup = this.controls.createControlGroup();
@@ -85,10 +99,48 @@ export default class DrawEnableView extends ItemView {
 		this.helpGroup = this.controls.createControlGroup();
 		// Help
 		this.helpGroup.createControlItem({ id: 'help', label: 'Help', icon: ICON_HELP });
+
+		// Mouse, Pen, Touch Input
+		this.registerDomEvent(document, 'pointermove', (evt: PointerEvent) => {
+			this.updateInput(Input.StringToType(evt.pointerType));
+		});
+		this.registerDomEvent(document, 'pointerdown', (evt: PointerEvent) => {
+			console.log("pointerdown " + evt.pointerType);
+			this.updateInput(Input.StringToType(evt.pointerType));
+		});
+
+		// Keyboard Input
+		this.registerDomEvent(document, 'keydown', (evt: KeyboardEvent) => {
+			this.updateInput(Input.StringToType('keyboard'));
+		});
 	}
 
 	async onClose() {
 		// Nothing to clean up.
+	}
+
+	updateInput(inputType: EInputType) {
+		if (this.input.getType() !== inputType) {	
+			console.log(inputType);
+			this.input.setType(inputType);
+			if (inputType == EInputType.mouse) {
+				this.updateTool(this.pluginSettings.MouseDefaultTool);
+				this.tool.setType(this.pluginSettings.MouseDefaultTool);
+			}
+			else if (inputType == EInputType.pen) {
+				this.updateTool(this.pluginSettings.PenDefaultTool);
+				this.tool.setType(this.pluginSettings.PenDefaultTool);
+			}
+			else if (inputType == EInputType.touch) {
+				this.updateTool(this.pluginSettings.TouchDefaultTool);
+				this.tool.setType(this.pluginSettings.TouchDefaultTool);
+			}
+		}
+	}
+
+	updateTool(toolType: EToolType) {
+		console.log(toolType);
+		this.toolGroup.changeSelected(toolType.toString().toLocaleLowerCase());
 	}
 }
 

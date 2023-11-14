@@ -1,4 +1,4 @@
-import { ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH } from "src/constants";
+import { ICON_HELP, ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH } from "src/constants";
 
 export class Input {
 	type: EInputType;
@@ -47,7 +47,7 @@ export class Input {
 			this.icon = ICON_INPUT_TYPE_TOUCH;
 		}
 		else {
-			this.icon = "";
+			this.icon = ICON_HELP;
 		}
 	}
 
