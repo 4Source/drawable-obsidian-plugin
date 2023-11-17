@@ -1,7 +1,7 @@
 import { SVGSurface } from "./SVGSurface";
 
 export class SVGSheet extends SVGSurface {
-	active: SVGPolygonElement;
+	active: SVGPathElement;
 
 	/**
 	 * 
@@ -25,24 +25,26 @@ export class SVGSheet extends SVGSurface {
 	}
 
 	/**
-	 * Create new Polylne and add first coordinates.
+	 * Create new Path and add first coordinates.
 	 * @param x X-Coordinate
 	 * @param y Y-Coordinate
+	 * @param strokeWidth The Width of the Stroke
+	 * @param strokeColor The Color of the Stroke
 	 */
-	addPolyline(x: number, y: number) {
-		this.active = this.element.createSvg('polyline', { attr: { 'points': `${x}, ${y}`, 'fill': 'none', 'stroke': 'black', 'stroke-width': '3' } });
+	addPath(x: number, y: number, strokeWidth: number, strokeColor: string) {
+		this.active = this.element.createSvg('path', {attr: {'d': `M ${x} ${y}`, 'fill': 'none', 'stroke': strokeColor, 'stroke-width': strokeWidth }});
 	}
 
 	/**
-	 * Add Points to the Polyline
+	 * Add Points to the Path
 	 * @param x X-Coordinate
 	 * @param y Y-Coordinate
 	 */
-	appendPolyline(x: number, y: number) {
-		if (this.active) {
-			let points = this.active.getAttr('points');
-			points = points + ` ${x},${y}`;
-			this.active.setAttr('points', points);
+	appendPath(x: number, y: number) {
+		if(this.active) {
+			let points = this.active.getAttr('d');
+			points = points + ` ${x} ${y}`;
+			this.active.setAttr('d', points);
 		}
 	}
 }

@@ -52,17 +52,17 @@ export default class DrawEnableView extends ItemView {
 		// SVG Sheet
 		this.sheet = new SVGSheet(container.children[0], (ev) => {
 			if(this.tool.getType() === EToolType.pencil) {
-				this.sheet.addPolyline(ev.offsetX, ev.offsetY);
+				this.sheet.addPath(ev.offsetX, ev.offsetY, 2, 'black');
 			}
 			
 		}, (ev) => {
 			if(this.tool.getType() === EToolType.pencil) {
-				this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+				this.sheet.appendPath(ev.offsetX, ev.offsetY);
 			}
 			
 		}, (ev) => {
 			if(this.tool.getType() === EToolType.pencil) {
-				this.sheet.appendPolyline(ev.offsetX, ev.offsetY);
+				this.sheet.appendPath(ev.offsetX, ev.offsetY);
 			}
 			
 		});
