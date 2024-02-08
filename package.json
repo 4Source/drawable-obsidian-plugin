@@ -1,6 +1,6 @@
 {
 	"name": "draw-enable-obsidian-plugin",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "This plugin is for drawing with a pen in Obsidian (https://obsidian.md).",
 	"main": "main.js",
 	"scripts": {
