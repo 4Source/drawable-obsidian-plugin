@@ -1,7 +1,7 @@
-export const VIEW_TYPE_DRAWENABLE = "drawenable";
-export const PLUGIN_DISPLAY_NAME = "DrawEnable";
-export const CSS_PLUGIN_CLASS = "plugin-draw-enable";
-export const ICON_PLUGIN = "pencil";
+export const VIEW_TYPE_DRAWENABLE = 'drawenable';
+export const PLUGIN_DISPLAY_NAME = 'DrawEnable';
+export const CSS_PLUGIN_CLASS = 'plugin-draw-enable';
+export const ICON_PLUGIN = 'pencil';
 
 export const ICON_INPUT_TYPE_KEYBOARD = 'keyboard';
 export const ICON_INPUT_TYPE_MOUSE = 'mouse';

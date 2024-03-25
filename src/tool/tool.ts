@@ -1,4 +1,4 @@
-import { ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP } from "src/constants";
+import { ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP } from 'src/constants';
 
 export class Tool {
 	private type: EToolType;
@@ -12,7 +12,7 @@ export class Tool {
 		this.type = type;
 		this.setDefaultIcon(type);
 	}
-	setStringType(type: String) {
+	setStringType(type: string) {
 		this.setType(Tool.StringToType(type));
 	}
 	getType() {
@@ -46,7 +46,7 @@ export class Tool {
 		return this.icon;
 	}
 
-	static StringToType(type: String): EToolType {
+	static StringToType(type: string): EToolType {
 		if(type == EToolType.pencil.toString()) {
 			return EToolType.pencil;
 		}
@@ -75,10 +75,8 @@ export enum EToolType {
 	eraser = 'Eraser',
 	marker = 'Marker',
 	navigate = 'Navigate',
-	none = "None",
+	none = 'None',
 	pencil = 'Pencil',
 	pointer = 'Pointer',
-	select = 'Select'
-
+	select = 'Select',
 }
-

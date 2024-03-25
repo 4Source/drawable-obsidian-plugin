@@ -1,13 +1,9 @@
-import { SVGSurface } from "./SVGSurface";
+import { SVGSurface } from './SVGSurface';
 
 export class SVGBackground extends SVGSurface {
 	pattern_dot: SVGPatternElement;
 	pattern_plus: SVGPatternElement;
 
-	/**
-	 * 
-	 * @param parant 
-	 */
 	constructor(parant: Element) {
 		super(parant);
 		// Create Dot Pattern

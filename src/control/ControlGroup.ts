@@ -1,23 +1,19 @@
-import { CSS_PLUGIN_CLASS } from "src/constants";
-import { ControlItem, ItemInfo } from "./ControlItem";
+import { CSS_PLUGIN_CLASS } from 'src/constants';
+import { ControlItem, ItemInfo } from './ControlItem';
 
 export class ControlGroup {
 	element: Element;
 	controlgroups: ControlGroup[];
 	controlitems: ControlItem[];
 
-	/**
-	 * 
-	 * @param parant 
-	 * @param o 
-	 */
 	constructor(parant: Element, o: GroupInfo) {
 		// Create Element
 		this.element = parant.createEl('div', { cls: CSS_PLUGIN_CLASS });
 		// Setup grouptype
 		if (o.subgroup) {
 			this.element.addClass('control-subgroup');
-		} else {
+		}
+		else {
 			this.element.addClass('control-group');
 		}
 		// Setup Arrays
@@ -31,7 +27,7 @@ export class ControlGroup {
 	 * @returns The Control Item
 	 */
 	createControlItem(o: ItemInfo): ControlItem {
-		let item = new ControlItem(this, o);
+		const item = new ControlItem(this, o);
 		this.controlitems.push(item);
 		return item;
 	}
@@ -42,7 +38,7 @@ export class ControlGroup {
 	 * @returns The Control Subgroup
 	 */
 	createControlSubGroup(o: GroupInfo): ControlGroup {
-		let group = new ControlGroup(this.element, { ...o, subgroup: true });
+		const group = new ControlGroup(this.element, { ...o, subgroup: true });
 		this.controlgroups.push(group);
 		return group;
 	}
@@ -52,36 +48,32 @@ export class ControlGroup {
 	 * @param id ID of Control Item whitch should be selected
 	 */
 	changeSelected(id: string) {
-		this.loopThroughGroups((obj) => {
-			let cur = obj as ControlItem;
-			if (id === cur.id) {
-				cur.element.addClass('selected');
-				cur.element.dispatchEvent(new CustomEvent('itemselectionchange'));
+		this.loopThroughGroups((item: ControlItem) => {
+			if (id === item.id) {
+				item.element.addClass('selected');
+				item.element.dispatchEvent(new CustomEvent('itemselectionchange'));
 			}
 			else {
-				cur.element.removeClass('selected');
-				cur.element.dispatchEvent(new CustomEvent('itemselectionchange'));
+				item.element.removeClass('selected');
+				item.element.dispatchEvent(new CustomEvent('itemselectionchange'));
 			}
-		},
-			this);
+		}, this);
 	}
 
 	/**
 	 * Loop through all subgroups
-	 * @param funcCallback 
-	 * @param controlgroup 
+	 * @param funcCallback
+	 * @param controlgroup
 	 */
-	private loopThroughGroups(funcCallback: ({ }) => any, controlgroup: ControlGroup) {
+	private loopThroughGroups(funcCallback: (obj: ControlItem) => void, controlgroup: ControlGroup) {
 		if (controlgroup.controlgroups.length > 0) {
 			controlgroup.controlgroups.forEach((group) => {
 				this.loopThroughGroups(funcCallback, group);
-			})
+			});
 		}
 		if (controlgroup.controlitems.length > 0) {
 			controlgroup.controlitems.forEach(funcCallback);
 		}
-
-
 	}
 }
 

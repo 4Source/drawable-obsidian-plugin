@@ -1,27 +1,20 @@
-import { SVGSurface } from "./SVGSurface";
+import { SVGSurface } from './SVGSurface';
 
 export class SVGSheet extends SVGSurface {
 	active: SVGPathElement;
 
-	/**
-	 * 
-	 * @param parent 
-	 * @param onPointerdownCallback 
-	 * @param onPointerupCallback 
-	 * @param onPointermoveCallback 
-	 */
-	constructor(parent: Element, onPointerdownCallback: (ev: PointerEvent) => any, onPointerupCallback: (ev: PointerEvent) => any, onPointermoveCallback: (ev: PointerEvent) => any,) {
+	constructor(parent: Element, onPointerdownCallback: (ev: PointerEvent) => void, onPointerupCallback: (ev: PointerEvent) => void, onPointermoveCallback: (ev: PointerEvent) => void,) {
 		super(parent);
 		this.element.addClass('sheet');
 		this.element.addEventListener('pointerdown', (ev) => {
 			this.element.addEventListener('pointermove', onPointermoveCallback);
 			onPointerdownCallback(ev);
 		});
+
 		this.element.addEventListener('pointerup', (ev) => {
 			this.element.removeEventListener('pointermove', onPointermoveCallback);
 			onPointerupCallback(ev);
 		});
-
 	}
 
 	/**

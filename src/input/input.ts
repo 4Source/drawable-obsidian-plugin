@@ -1,4 +1,4 @@
-import { ICON_HELP, ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH } from "src/constants";
+import { ICON_HELP, ICON_INPUT_TYPE_KEYBOARD, ICON_INPUT_TYPE_MOUSE, ICON_INPUT_TYPE_PEN, ICON_INPUT_TYPE_TOUCH } from 'src/constants';
 
 export class Input {
 	private type: EInputType;
@@ -25,7 +25,7 @@ export class Input {
 		this.type = type;
 		this.setDefaultIcon(type);
 	}
-	setStringType(type: String) {
+	setStringType(type: string) {
 		this.setType(Input.StringToType(type));
 	}
 
@@ -34,16 +34,16 @@ export class Input {
 	}
 
 	setDefaultIcon(type: EInputType) {
-		if(type == EInputType.keyboard) {
+		if (type == EInputType.keyboard) {
 			this.icon = ICON_INPUT_TYPE_KEYBOARD;
 		}
-		else if(type == EInputType.mouse) {
+		else if (type == EInputType.mouse) {
 			this.icon = ICON_INPUT_TYPE_MOUSE;
 		}
-		else if(type == EInputType.pen) {
+		else if (type == EInputType.pen) {
 			this.icon = ICON_INPUT_TYPE_PEN;
 		}
-		else if(type == EInputType.touch) {
+		else if (type == EInputType.touch) {
 			this.icon = ICON_INPUT_TYPE_TOUCH;
 		}
 		else {
@@ -55,17 +55,17 @@ export class Input {
 		return this.icon;
 	}
 
-	static StringToType(type: String): EInputType {
-		if(type == EInputType.keyboard.toString()) {
+	static StringToType(type: string): EInputType {
+		if (type == EInputType.keyboard.toString()) {
 			return EInputType.keyboard;
 		}
-		else if(type == EInputType.mouse.toString()) {
+		else if (type == EInputType.mouse.toString()) {
 			return EInputType.mouse;
 		}
-		else if(type == EInputType.pen.toString()) {
+		else if (type == EInputType.pen.toString()) {
 			return EInputType.pen;
 		}
-		else if(type == EInputType.touch.toString()) {
+		else if (type == EInputType.touch.toString()) {
 			return EInputType.touch;
 		}
 		else {
@@ -77,7 +77,7 @@ export class Input {
 export enum EInputType {
 	keyboard = 'keyboard',
 	mouse = 'mouse',
-	none = "none",
+	none = 'none',
 	pen = 'pen',
-	touch = 'touch'
+	touch = 'touch',
 }

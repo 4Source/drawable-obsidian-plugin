@@ -1,6 +1,6 @@
-import { CSS_PLUGIN_CLASS } from "src/constants";
-import { ControlGroup } from "./ControlGroup";
-import { setIcon } from "obsidian";
+import { CSS_PLUGIN_CLASS } from 'src/constants';
+import { ControlGroup } from './ControlGroup';
+import { setIcon } from 'obsidian';
 
 export class ControlItem {
 	id: string;
@@ -8,10 +8,9 @@ export class ControlItem {
 	selectgroup?: ControlGroup;
 	parantitem?: ControlItem;
 
-
 	constructor(group: ControlGroup, o: ItemInfo) {
 		// Create Element
-		this.element = group.element.createEl('div', { cls: ["control-item", CSS_PLUGIN_CLASS] });
+		this.element = group.element.createEl('div', { cls: ['control-item', CSS_PLUGIN_CLASS] });
 
 		// Save Values if passed
 		this.id = o.id;
@@ -21,8 +20,8 @@ export class ControlItem {
 		// Setup Icon
 		setIcon(this.element, o.icon);
 		// Setup Label
-		this.element.setAttr("aria-label", o.label);
-		this.element.setAttr("data-tooltip-position", "left");
+		this.element.setAttr('aria-label', o.label);
+		this.element.setAttr('data-tooltip-position', 'left');
 
 		// Setup Visibility
 		this.changeVisibility(o.invisible ? o.invisible : false);
@@ -37,17 +36,13 @@ export class ControlItem {
 			});
 		}
 		if (this.parantitem) {
-			this.element.addEventListener('itemselectionchange', (ev) => {
-				let invisible = this.parantitem ? this.parantitem.element.hasClass('selected') : false
+			this.element.addEventListener('itemselectionchange', () => {
+				const invisible = this.parantitem ? this.parantitem.element.hasClass('selected') : false;
 				this.changeVisibility(!invisible);
 			});
 		}
 	}
 
-	/**
-	 * 
-	 * @param invisible 
-	 */
 	changeVisibility(invisible: boolean) {
 		if (invisible) {
 			this.element.addClass('invisible');
@@ -57,10 +52,6 @@ export class ControlItem {
 		}
 	}
 
-	/**
-	 * 
-	 * @param id 
-	 */
 	select(id: string) {
 		this.selectgroup?.changeSelected(id);
 	}
@@ -70,7 +61,7 @@ export interface ItemInfo {
 	label: string;
 	icon: string;
 	id: string;
-	onClickCallback?: () => any;
+	onClickCallback?: () => void;
 	invisible?: boolean;
 	selectgroup?: ControlGroup;
 	parantitem?: ControlItem;
