@@ -66,3 +66,6 @@ Panel with [navigation](#navigation) funktionis.
 ## Reset rotation
 ## Jump to Top
 ## Jump to Bottom
+
+# Credits
+Big thanks to the creator of (PDF-Howto)[https://p2501.ch/pdf-howto/] for the neat documentation of the structure of PDF files.
