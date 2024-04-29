@@ -49,9 +49,9 @@ Panel with [navigation](#navigation) funktionis.
   - Dublicate
   - Remove
 
-# Tool general options
-## Size
-## Color Picker
+## Tool general options
+### Size
+### Color Picker
 - Fast Color Picker
 - RGB Color Picker
 - Pipette Color Picker
@@ -66,6 +66,19 @@ Panel with [navigation](#navigation) funktionis.
 ## Reset rotation
 ## Jump to Top
 ## Jump to Bottom
+
+# View Types
+## Markdown View
+**File extensions:** .md 
+## PDF View
+> [!NOTE]  
+> This View is currently priorized
+
+**File extensions:** .pdf
+## Draw Canvas View
+**File extensions:** .draw
+## Image View
+**File extensions:** .bmp, .png, .jpg, .jpeg, .gif, .svg, .webp, .avif
 
 # Credits
 Big thanks to the creator of [PDF-Howto](https://p2501.ch/pdf-howto/) for the neat documentation of the structure of PDF files.
