@@ -1,6 +1,6 @@
-export const VIEW_TYPE_DRAWENABLE = 'drawenable';
-export const PLUGIN_DISPLAY_NAME = 'DrawEnable';
-export const CSS_PLUGIN_CLASS = 'plugin-draw-enable';
+export const VIEW_TYPE_DRAWABLE = 'drawable';
+export const PLUGIN_DISPLAY_NAME = 'Drawable';
+export const CSS_PLUGIN_CLASS = 'plugin-drawable';
 export const ICON_PLUGIN = 'pencil';
 
 export const ICON_INPUT_TYPE_KEYBOARD = 'keyboard';

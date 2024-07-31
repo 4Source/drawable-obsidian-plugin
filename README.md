@@ -1,4 +1,4 @@
-# DrawEnable Obsidian Plugin
+# Drawable Obsidian Plugin
 > [!WARNING]  
 > This Plugin is under Development!
 
