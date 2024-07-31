@@ -1,14 +1,14 @@
 import { ItemView, WorkspaceLeaf } from 'obsidian';
-import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_MORE_HORIZONTAL, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWENABLE } from '../constants';
+import { CSS_PLUGIN_CLASS, ICON_EDIT_MODE_ERASER, ICON_EDIT_MODE_MARKER, ICON_EDIT_MODE_NAV, ICON_EDIT_MODE_PENCIL, ICON_EDIT_MODE_POINTER, ICON_EDIT_MODE_SELECT, ICON_HELP, ICON_MORE_HORIZONTAL, ICON_PLUGIN, ICON_REDO, ICON_SETTING, ICON_UNDO, PLUGIN_DISPLAY_NAME, VIEW_TYPE_DRAWABLE } from '../constants';
 import { Control } from 'src/control/Control';
 import { ControlGroup } from 'src/control/ControlGroup';
 import { SVGBackground } from 'src/svg/SVGBackground';
 import { SVGSheet } from 'src/svg/SVGSheet';
 import { EInputType, Input } from 'src/input/input';
 import { EToolType, Tool } from 'src/tool/tool';
-import { DrawEnablePluginSettings } from 'src/main';
+import { DrawablePluginSettings } from 'src/main';
 
-export default class DrawEnableView extends ItemView {
+export default class DrawableView extends ItemView {
 	controls: Control;
 	background: SVGBackground;
 	sheet: SVGSheet;
@@ -16,17 +16,17 @@ export default class DrawEnableView extends ItemView {
 	unredoGroup: ControlGroup;
 	settingsGroup: ControlGroup;
 	helpGroup: ControlGroup;
-	pluginSettings: DrawEnablePluginSettings;
+	pluginSettings: DrawablePluginSettings;
 	input: Input;
 	tool: Tool;
 
-	constructor(leaf: WorkspaceLeaf, settings: DrawEnablePluginSettings) {
+	constructor(leaf: WorkspaceLeaf, settings: DrawablePluginSettings) {
 		super(leaf);
 		this.pluginSettings = settings;
 	}
 
 	getViewType(): string {
-		return VIEW_TYPE_DRAWENABLE;
+		return VIEW_TYPE_DRAWABLE;
 	}
 
 	getDisplayText(): string {

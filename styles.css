@@ -1,13 +1,13 @@
-.status-bar-item.plugin-draw-enable {
+.status-bar-item.plugin-drawable {
 	padding: 0 var(--size-2-2);
 }
 
-.view-content.plugin-draw-enable {
+.view-content.plugin-drawable {
 	padding: 0;
 	position: relative;
 }
 
-.wrapper.plugin-draw-enable {
+.wrapper.plugin-drawable {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -25,7 +25,7 @@
 	user-select: none;
 }
 
-.controls.plugin-draw-enable {
+.controls.plugin-drawable {
 	right: var(--size-4-2);
 	top: var(--size-4-2);
 	gap: var(--size-4-2);
@@ -36,7 +36,7 @@
 	font-size: var(--font-ui-medium);
 }
 
-.control-group.plugin-draw-enable {
+.control-group.plugin-drawable {
 	border-radius: var(--radius-s);
 	background-color: var(--background-primary);
 	border: 1px solid var(--background-modifier-border);
@@ -45,7 +45,7 @@
 	flex-direction: column;
 	overflow: hidden;
 }
-.sub-control-group.plugin-draw-enable {
+.sub-control-group.plugin-drawable {
 	/* border-radius: var(--radius-s); */
 	background-color: var(--background-primary);
 	/* border: 1px solid var(--background-modifier-border); */
@@ -55,7 +55,7 @@
 	overflow: hidden;
 }
 
-.control-item.plugin-draw-enable {
+.control-item.plugin-drawable {
 	border-radius: 0;
 	box-shadow: none;
 	height: auto;
@@ -73,30 +73,30 @@
 	--icon-stroke: var(--icon-s-stroke-width);
 }
 
-.control-item.plugin-draw-enable:hover {
+.control-item.plugin-drawable:hover {
 	color: var(--text-normal);
 	background-color: var(--interactive-hover);
 }
 
-.control-item.plugin-draw-enable.selected {
+.control-item.plugin-drawable.selected {
 	color: var(--text-normal);
 	background-color: var(--interactive-accent);
 }
-.control-item.plugin-draw-enable.selected:hover {
+.control-item.plugin-drawable.selected:hover {
 	background-color: var(--interactive-accent-hover);
 }
-.control-item.plugin-draw-enable.invisible {
+.control-item.plugin-drawable.invisible {
 	display: none;
 }
-/* .child-control-item.plugin-draw-enable {
+/* .child-control-item.plugin-drawable {
 	background-color: var(--interactive-accent);
 	margin-top: -1px;
 }
-.child-control-item.plugin-draw-enable:hover {
+.child-control-item.plugin-drawable:hover {
 	background-color: var(--interactive-accent-hover);
 } */
 
-.background.plugin-draw-enable {
+.background.plugin-drawable {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -105,25 +105,25 @@
 	pointer-events: none;
 }
 
-.background.plugin-draw-enable pattern {
+.background.plugin-drawable pattern {
 	overflow: hidden;
 }
 
-.background.plugin-draw-enable rect {
+.background.plugin-drawable rect {
 	width: 100%;
 	height: 100%;
 	fill: none;
 }
 
-.background.plugin-draw-enable.dot rect {
+.background.plugin-drawable.dot rect {
 	fill: url(#drawenable-dot);
 }
 
-.background.plugin-draw-enable.plus rect {
+.background.plugin-drawable.plus rect {
 	fill: url(#drawenable-plus);
 }
 
-.sheet.plugin-draw-enable {
+.sheet.plugin-drawable {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -131,7 +131,7 @@
 	top: 0;
 }
 
-.sheet.plugin-draw-enable rect {
+.sheet.plugin-drawable rect {
 	width: 100%;
 	height: 100%;
 	fill: none;

@@ -1,6 +1,6 @@
 {
-	"id": "draw-enable",
-	"name": "Draw enable",
+	"id": "drawable",
+	"name": "Drawable",
 	"version": "0.0.2",
 	"minAppVersion": "0.15.0",
 	"description": "This plugin is for drawing with a pen in Obsidian.",
